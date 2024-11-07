@@ -1,0 +1,13 @@
+{
+    "configurations": [
+        {
+            "name": "(lldb) Launch",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/task1.1",
+            "args": [],
+            "cwd": "${fileDirname}",
+        }
+    ],
+    "version": "2.0.0"
+}
