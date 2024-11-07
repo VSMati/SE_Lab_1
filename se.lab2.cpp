@@ -4,7 +4,7 @@
 #include <limits>
 #include <cctype>
 #include <stdexcept>
-
+//prototypes of functions
 void getInputFromUser(double &a, double &b, double &step, int &n, bool fromFile = false);
 void getInputRangeFromFile(double &a, double &b, double &step, int &n);
 void calculateAndDisplayResults(double a, double b, double step, int n, bool saveToFile = false);
