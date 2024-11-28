@@ -213,16 +213,21 @@ double calculateFormulaForXLessThanZero(int n) {
 double calculateFormulaForXGreaterThanOrEqualToZero(double x, int n) {
     double product = 1.0;
 
-    for (int j = 1; j <= n; ++j) {
-        if ((x + 3.0 * j) == 0) {
-            displayErrorMessage("Division by zero encountered. Adjust the step or range.");
-            return 0;
+    try {
+        for (int j = 1; j <= n; ++j) {
+            if ((x + 3.0 * j) == 0) {
+                throw std::domain_error("Division by zero encountered in calculation.");
+            }
+            product *= static_cast<double>(j) / (x + 3.0 * j);
         }
-        product *= static_cast<double>(j) / (x + 3.0 * j);
+    } catch (const std::exception &e) {
+        displayErrorMessage(e.what());
+        return 0; // Return a default value to indicate an error.
     }
 
     return x + product;
 }
+
 
 void createDefaultInputFile() {
     std::ofstream inputFile("input.txt");
