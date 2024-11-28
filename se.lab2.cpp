@@ -68,40 +68,41 @@ void getInputFromUser(double &a, double &b, double &step, int &n, bool fromFile)
         bool validInput = false;
 
         do {
-            std::cout << "Please enter the start of the range (a): ";
-            while (!(std::cin >> a)) {
-                displayErrorMessage("Invalid input for 'a'. Please enter a real number.");
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            try {
                 std::cout << "Please enter the start of the range (a): ";
-            }
+                if (!(std::cin >> a)) {
+                    throw std::invalid_argument("Invalid input for 'a'. Please enter a real number.");
+                }
 
-            std::cout << "Please enter the end of the range (b): ";
-            while (!(std::cin >> b)) {
-                displayErrorMessage("Invalid input for 'b'. Please enter a real number.");
+                std::cout << "Please enter the end of the range (b): ";
+                if (!(std::cin >> b)) {
+                    throw std::invalid_argument("Invalid input for 'b'. Please enter a real number.");
+                }
+
+                if (!isValidRange(a, b)) {
+                    throw std::out_of_range("'b' must be greater than 'a'.");
+                }
+
+                validInput = true;
+            } catch (const std::exception &e) {
+                displayErrorMessage(e.what());
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cout << "Please enter the end of the range (b): ";
-            }
-
-            if (!isValidRange(a, b)) {
-                displayErrorMessage("'b' must be greater than 'a'. Try again.");
-            } else {
-                validInput = true;
             }
         } while (!validInput);
 
         validateStep(step);
 
         bool validN = false;
-        double tempN;
         while (!validN) {
-            std::cout << "Please enter a positive integer for n (n > 0): ";  // Updated prompt
-            if (std::cin >> tempN && tempN == floor(tempN) && tempN > 0) {  // Ensure n > 0
-                n = static_cast<int>(tempN);
+            try {
+                std::cout << "Please enter a positive integer for n (n > 0): ";
+                if (!(std::cin >> n) || n <= 0) {
+                    throw std::invalid_argument("Invalid input! n must be a positive integer (greater than 0).");
+                }
                 validN = true;
-            } else {
-                displayErrorMessage("Invalid input! n must be a positive integer (greater than 0).");
+            } catch (const std::exception &e) {
+                displayErrorMessage(e.what());
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
