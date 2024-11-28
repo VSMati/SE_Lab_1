@@ -125,63 +125,40 @@ void validateStep(double &step) {
 }
 
 void getInputRangeFromFile(double &a, double &b, double &step, int &n) {
-    std::ifstream inputFile("input.txt");
+    try {
+        std::ifstream inputFile("input.txt");
+        if (!inputFile) {
+            throw std::ios_base::failure("Error: File not found.");
+        }
 
-    if (!inputFile) {
-        displayErrorMessage("Error: File not found. Default values will be used.");
-        a = 0.0;
-        b = 1.0;
-        step = 0.5;
-        n = 3;
-        calculateAndDisplayResults(a, b, step, n, false);
-        getInputFromUser(a, b, step, n, false);
-        return;
-    }
+        inputFile >> a >> b >> step >> n;
+        if (inputFile.fail()) {
+            throw std::invalid_argument("Error: Non-numeric data found in the file.");
+        }
 
-    inputFile >> a >> b >> step >> n;
+        if (a >= b) {
+            throw std::out_of_range("Error: Invalid range! 'a' must be less than 'b'.");
+        }
+        if (step <= 0) {
+            throw std::invalid_argument("Error: Step size must be a positive number.");
+        }
+        if (n <= 0) {
+            throw std::invalid_argument("Error: 'n' must be a positive integer (greater than 0).");
+        }
 
-    if (inputFile.fail()) {
-        displayErrorMessage("Error: Non-numeric data found in the file. Default values will be used.");
-        a = 0.0;
-        b = 1.0;
-        step = 0.5;
-        n = 3;
-        calculateAndDisplayResults(a, b, step, n, false);
-        getInputFromUser(a, b, step, n, false);
-        inputFile.close();
-        return;
-    }
-
-    bool hasError = false;
-    if (a >= b) {
-        displayErrorMessage("Error: Invalid range! 'a' must be less than 'b'.");
-        hasError = true;
-    }
-    if (step <= 0) {
-        displayErrorMessage("Error: Step size must be a positive number.");
-        hasError = true;
-    }
-    if (n <= 0) {  // Ensure n > 0
-        displayErrorMessage("Error: 'n' must be a positive integer (greater than 0).");
-        hasError = true;
-    }
-
-    if (hasError) {
-        displayErrorMessage("Using default values: a = 0.0, b = 1.0, step = 0.5, n = 3.");
-        a = 0.0;
-        b = 1.0;
-        step = 0.5;
-        n = 3;
-        calculateAndDisplayResults(a, b, step, n, false);
-        getInputFromUser(a, b, step, n, false);
-    } else {
         std::cout << "Values read from file:\n";
         std::cout << "Range: a = " << a << ", b = " << b << "\n";
         std::cout << "Step size: " << step << "\n";
         std::cout << "n = " << n << "\n";
-    }
 
-    inputFile.close();
+    } catch (const std::exception &e) {
+        displayErrorMessage(e.what());
+        std::cout << "Using default values: a = 0.0, b = 1.0, step = 0.5, n = 3.\n";
+        a = 0.0;
+        b = 1.0;
+        step = 0.5;
+        n = 3;
+    }
 }
 
 void calculateAndDisplayResults(double a, double b, double step, int n, bool saveToFile) {
