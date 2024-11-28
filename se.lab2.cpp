@@ -1,3 +1,4 @@
+#include "se.lab2.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -5,9 +6,9 @@
 #include <cctype>
 #include <stdexcept>
 
-void getInputFromUser(double &a, double &b, double &step, int &n, bool fromFile = false);
+void getInputFromUser(double &a, double &b, double &step, int &n, bool fromFile);
 void getInputRangeFromFile(double &a, double &b, double &step, int &n);
-void calculateAndDisplayResults(double a, double b, double step, int n, bool saveToFile = false);
+void calculateAndDisplayResults(double a, double b, double step, int n, bool saveToFile);
 void saveResultToFile(double a, double b, double step, int n);
 double calculateFormulaForXLessThanZero(int n);
 double calculateFormulaForXGreaterThanOrEqualToZero(double x, int n);
@@ -24,6 +25,7 @@ void validateStep(double &step);
 void createDefaultInputFile();
 void displayFileInstructions();
 
+#ifndef UNIT_TEST
 int main() {
     double a, b, step;
     int n;
@@ -60,6 +62,7 @@ int main() {
     std::cout << "That's all for today...\nThank you very much.\nGoodbye! :)" << std::endl;
     return 0;
 }
+#endif
 
 void getInputFromUser(double &a, double &b, double &step, int &n, bool fromFile) {
     if (fromFile) {
@@ -110,19 +113,28 @@ void getInputFromUser(double &a, double &b, double &step, int &n, bool fromFile)
     }
 }
 
+bool isStepValid(double step) {
+    return step > 0;
+}
+
 void validateStep(double &step) {
     bool validStep = false;
     while (!validStep) {
         std::cout << "Please enter a positive step size: ";
-        if (std::cin >> step && step > 0) {
-            validStep = true;
+        if (std::cin >> step) {
+            if (isStepValid(step)) {
+                validStep = true;
+            } else {
+                displayErrorMessage("Step size must be a positive real number.");
+            }
         } else {
-            displayErrorMessage("Step size must be a positive real number.");
+            displayErrorMessage("Invalid input. Please enter a valid number.");
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
 }
+
 
 void getInputRangeFromFile(double &a, double &b, double &step, int &n) {
     try {

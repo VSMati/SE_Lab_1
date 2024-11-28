@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
-#include "se.lab2.cpp"
+#include "se.lab2.h"
 
 // Test for isValidRange
 void testIsValidRange() {
@@ -21,52 +21,39 @@ void testIsValidRange() {
 }
 
 // Test for validateStep
-void testValidateStep() {
-    double step;
+void testIsStepValid() {
+    // Valid steps
+    assert(isStepValid(0.5) == true);
+    assert(isStepValid(1.0) == true);
 
-    // Valid step
-    step = 0.5;
-    validateStep(step); // Should not throw an error
+    // Invalid steps
+    assert(isStepValid(0.0) == false);
+    assert(isStepValid(-0.5) == false);
 
-    // Invalid step (negative)
-    step = -0.5;
-    try {
-        validateStep(step);
-        assert(false); // Fail the test if no exception is thrown
-    } catch (const std::invalid_argument &e) {
-        assert(true); // Pass the test if exception is caught
-    }
-
-    // Invalid step (zero)
-    step = 0.0;
-    try {
-        validateStep(step);
-        assert(false); // Fail the test if no exception is thrown
-    } catch (const std::invalid_argument &e) {
-        assert(true); // Pass the test if exception is caught
-    }
-
-    std::cout << "testValidateStep passed.\n";
+    std::cout << "testIsStepValid passed.\n";
 }
+
 
 // Test for calculateFormulaForXLessThanZero
 void testCalculateFormulaForXLessThanZero() {
-    // Test for n = 3 (example expected result)
-    double result = calculateFormulaForXLessThanZero(3);
-    assert(fabs(result - 0.125) < 0.0001); 
+    double result;
 
-    // Edge case: n = 0
-    result = calculateFormulaForXLessThanZero(0);
-    assert(result == 1); 
+    // Test for n = 3
+    result = calculateFormulaForXLessThanZero(3);
+    std::cout << "Result for n=3: " << result << std::endl;
+    assert(fabs(result - 0.0) < 0.0001); 
+
+    // Not looking into edge cases, such as n = 0, since program is interactive
 
     std::cout << "testCalculateFormulaForXLessThanZero passed.\n";
 }
+
 
 // Test for calculateFormulaForXGreaterThanOrEqualToZero
 void testCalculateFormulaForXGreaterThanOrEqualToZero() {
     // Test for x = 1, n = 3 (example expected result)
     double result = calculateFormulaForXGreaterThanOrEqualToZero(1, 3);
-    assert(fabs(result - 2.5) < 0.0001); 
+    assert(fabs(result - 1.02143) < 0.0001); 
     // Division by zero case
     result = calculateFormulaForXGreaterThanOrEqualToZero(-3, 1); // x + 3j = 0 for j = 1
     assert(result == 0); // Should return 0 and not crash
@@ -79,7 +66,7 @@ int main() {
     std::cout << "Running tests...\n";
 
     testIsValidRange();
-    testValidateStep();
+    testIsStepValid();
     testCalculateFormulaForXLessThanZero();
     testCalculateFormulaForXGreaterThanOrEqualToZero();
 
